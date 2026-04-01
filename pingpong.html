@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bat and Ball</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    canvas { display: block; cursor: default; }
+
+    #hud {
+      width: 800px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 15px;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid #00ffff44;
+      border-bottom: none;
+      font-size: 14px;
+      color: #00ffff;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+    #hud span { color: #fff; }
+    #hud .hs  { color: #ffd700; }
+    #hud .spd { color: #00ff96; }
+  </style>
+</head>
+<body>
+
+  <div id="hud">
+    <div>LEVEL: <span id="hud-level">1</span></div>
+    <div>SCORE: <span id="hud-score">0</span></div>
+    <div>SPEED: <span id="hud-speed" class="spd">5.0</span></div>
+    <div>BALLS: <span id="hud-balls">1</span></div>
+    <div>BEST: <span id="hud-best" class="hs">0</span></div>
+  </div>
+
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+  <script>
+    window.addEventListener('keydown', e => {
+      if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) e.preventDefault();
+    });
+
+    const canvas  = document.getElementById('gameCanvas');
+    const ctx      = canvas.getContext('2d');
+
+    const hudLevel = document.getElementById('hud-level');
+    const hudScore = document.getElementById('hud-score');
+    const hudSpeed = document.getElementById('hud-speed');
+    const hudBalls = document.getElementById('hud-balls');
+    const hudBest  = document.getElementById('hud-best');
+
+    const S = {
+      W: 800, H: 600,
+      bgTop:    [30, 30, 45],
+      bgBottom: [10, 10, 15],
+      border:    '#00ffff',
+      fps:       60,
+      batSpeed: 10, 
+      baseBallSpeed: 7.0 
+    };
+
+    let state           = 'START'; 
+    let currentLevel    = 1;
+    let destroyedCount  = 0;
+    let transitionStart = 0;
+    let ballSpeedMod    = 0;
+    let maxSpeed        = 10.0; 
+    let score           = 0;
+    let highScore       = parseInt(localStorage.getItem('batHS') || '0');
+    let blocks          = [];
+    let balls           = [];
+
+    const bat = {
+      x: 335, y: 580, w: 130, h: 15,
+      movingLeft: false, 
+      movingRight: false,
+      update(mX) {
+        if (this.movingRight) this.x += S.batSpeed;
+        else if (this.movingLeft) this.x -= S.batSpeed;
+        else if (mX !== null) {
+            this.x = mX - this.w / 2;
+        }
+        if (this.x < 5) this.x = 5;
+        if (this.x + this.w > 795) this.x = 795 - this.w;
+      },
+      draw() {
+        ctx.fillStyle = '#64646e';
+        roundRect(ctx, this.x, this.y, this.w, this.h, 8);
+        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        roundRect(ctx, this.x + 4, this.y + 2, this.w - 8, 4, 3);
+      }
+    };
+
+    const BLOCK_COLORS = { 5: '#c8c8cd', 4: '#9400d3', 3: '#ff8c00', 2: '#32cd32', 1: '#00bfff' };
+
+    function makeBlock(x, y, hp, isSilver) {
+      return { x, y, w: 49, h: 15, hp, isSilver, alive: true };
+    }
+
+    function drawBlock(b) {
+      if (!b.alive) return;
+      let color = b.isSilver ? '#c8c8cd' : (BLOCK_COLORS[b.hp] || '#00bfff');
+      ctx.fillStyle = color;
+      roundRect(ctx, b.x, b.y, b.w, b.h, 4);
+      if (b.isSilver) {
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        roundRectStroke(ctx, b.x, b.y, b.w, b.h, 4);
+      }
+    }
+
+    function makeBall(xv, yv, mSpd) {
+      return {
+        x: 400 - 10, y: 390,
+        vx: xv, vy: yv,
+        r: 10,
+        maxSpeed: mSpd,
+        history: [],
+        alive: true
+      };
+    }
+
+    function updateBall(b) {
+      b.history.push({ x: b.x + b.r, y: b.y + b.r });
+      if (b.history.length > 8) b.history.shift();
+
+      b.x += b.vx;
+      b.y += b.vy;
+
+      if (b.x + b.r * 2 >= 795) { b.vx *= -1; b.x = 795 - b.r * 2; }
+      if (b.x <= 5) { b.vx *= -1; b.x = 5; }
+      if (b.y <= 5) { b.vy *= -1; b.y = 5; }
+
+      if (b.y > S.H) { b.alive = false; return 0; }
+
+      if (b.y + b.r * 2 >= bat.y && b.y + b.r * 2 <= bat.y + bat.h + Math.abs(b.vy) &&
+          b.x + b.r * 2 >= bat.x && b.x <= bat.x + bat.w) {
+        
+        const currentSpd = Math.hypot(b.vx, b.vy);
+        const hitPos = (b.x + b.r - bat.x) / bat.w;
+        const angle = (hitPos - 0.5) * (Math.PI / 2.5); 
+        
+        b.vx = Math.sin(angle) * currentSpd;
+        b.vy = -Math.cos(angle) * currentSpd;
+        b.y  = bat.y - b.r * 2;
+      }
+
+      let destroyed = 0;
+      for (let bl of blocks) {
+        if (!bl.alive) continue;
+        if (b.x + b.r * 2 >= bl.x && b.x <= bl.x + bl.w &&
+            b.y + b.r * 2 >= bl.y && b.y <= bl.y + bl.h) {
+          b.vy *= -1;
+          bl.hp--;
+          if (bl.hp <= 0) {
+            bl.alive = false;
+            destroyed++;
+            score++;
+            updateHUD();
+            
+            // FIX: Increase speed magnitude by exactly 0.5 every brick
+            const currentSpd = Math.hypot(b.vx, b.vy);
+            if (currentSpd < b.maxSpeed) {
+                const nextSpd = Math.min(b.maxSpeed, currentSpd + 0.5);
+                const ratio = nextSpd / currentSpd;
+                b.vx *= ratio;
+                b.vy *= ratio;
+            }
+          }
+          break;
+        }
+      }
+      return destroyed;
+    }
+
+    function drawBall(b) {
+      if (!b.alive) return;
+      b.history.forEach((pos, i) => {
+        const alpha = (i / 8) * 0.7;
+        ctx.fillStyle = `rgba(0,255,255,${alpha})`;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(b.x + b.r, b.y + b.r, b.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function startLevel(num) {
+      if (num > 3) { state = 'WIN'; return; }
+      currentLevel   = num;
+      blocks         = [];
+      balls          = [];
+      destroyedCount = 0;
+
+      if (num === 1) {
+        ballSpeedMod = 0; maxSpeed = 10.0; 
+        for (let r = 0; r < 10; r++) {
+          for (let c = 0; c < 16; c++) {
+            if ((r + c) % 2 === 0) {
+              const rv = Math.random();
+              const is_s = rv < 0.1;
+              const hp = is_s ? 5 : [1,2,3][Math.floor(Math.random()*3)];
+              blocks.push(makeBlock(c * 49.5 + 6, r * 19 + 50, hp, is_s));
+            }
+          }
+        }
+      } else if (num === 2) {
+        ballSpeedMod = 1.5; maxSpeed = 12.0;
+        for (let r = 0; r < 6; r++) {
+          for (let c = 0; c < 16; c++) {
+            const rv = Math.random();
+            const is_s = rv < 0.2;
+            const hp = is_s ? 5 : [1,1,2,3][Math.floor(Math.random()*4)];
+            blocks.push(makeBlock(c * 49.5 + 6, r * 19 + 50, hp, is_s));
+          }
+        }
+      } else if (num === 3) {
+        ballSpeedMod = 3.5; maxSpeed = 18.0;
+        for (let r = 0; r < 12; r++) {
+          for (let c = 0; c < 16; c++) {
+            if (Math.abs(7.5 - c) + Math.abs(5.5 - r) <= 5.5) {
+              const is_s = Math.random() < 0.6;
+              const hp = is_s ? 5 : 4;
+              blocks.push(makeBlock(c * 49.5 + 6, r * 19 + 50, hp, is_s));
+            }
+          }
+        }
+      }
+
+      transitionStart = performance.now();
+      state = 'TRANSITION';
+      updateHUD();
+    }
+
+    function spawnBall() {
+      if (balls.filter(b => b.alive).length < 5) {
+        const startSpd = S.baseBallSpeed + ballSpeedMod;
+        const dir = Math.random() < 0.5 ? 1 : -1;
+        const vx = startSpd * dir;
+        const vy = -startSpd;
+        balls.push(makeBall(vx, vy, maxSpeed));
+      }
+    }
+
+    function updateHUD() {
+      hudLevel.textContent = currentLevel;
+      hudScore.textContent = score;
+      
+      const activeBall = balls.find(b => b.alive);
+      if (activeBall) {
+        const spdValue = Math.hypot(activeBall.vx, activeBall.vy);
+        hudSpeed.textContent = spdValue.toFixed(1);
+      } else {
+        hudSpeed.textContent = (S.baseBallSpeed + ballSpeedMod).toFixed(1);
+      }
+
+      hudBalls.textContent = balls.filter(b => b.alive).length;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('batHS', highScore);
+      }
+      hudBest.textContent = highScore;
+    }
+
+    function drawBackground() {
+      const grad = ctx.createLinearGradient(0, 0, 0, S.H);
+      grad.addColorStop(0, `rgb(${S.bgTop.join(',')})`);
+      grad.addColorStop(1, `rgb(${S.bgBottom.join(',')})`);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S.W, S.H);
+      ctx.strokeStyle = S.border;
+      ctx.lineWidth   = 5;
+      ctx.strokeRect(2.5, 2.5, S.W - 5, S.H - 5);
+    }
+
+    function drawOverlay(title, subtitle, titleColor = '#00ffff') {
+      ctx.fillStyle = 'rgba(10,10,20,0.85)';
+      ctx.fillRect(0, 0, S.W, S.H);
+      ctx.fillStyle   = titleColor;
+      ctx.font        = 'bold 72px Arial';
+      ctx.textAlign   = 'center';
+      ctx.fillText(title, S.W / 2, 250);
+      ctx.fillStyle   = '#c8c8c8';
+      ctx.font        = '28px Arial';
+      ctx.fillText(subtitle, S.W / 2, 320);
+      ctx.textAlign   = 'left';
+    }
+
+    function drawStartScreen() {
+      ctx.fillStyle = 'rgba(10,10,20,0.92)';
+      ctx.fillRect(0, 0, S.W, S.H);
+      ctx.fillStyle = '#00ffff';
+      ctx.font      = 'bold 88px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Bat and Ball', S.W / 2, 100);
+      ctx.fillStyle   = 'rgba(30,30,50,0.95)';
+      roundRect(ctx, 150, 140, 500, 210, 15);
+      ctx.strokeStyle = '#00ffff';
+      ctx.lineWidth   = 2;
+      roundRectStroke(ctx, 150, 140, 500, 210, 15);
+      const lines = [
+        ['HOW TO PLAY', '#00ffff'],
+        ['--------------------------', '#aaa'],
+        ['• Start Speed: 7.0 | Lvl 1 Cap: 10.0', '#00ffff'],
+        ['• Move bat with MOUSE or ARROW KEYS', '#c8c8c8'],
+        ['• Speed increases +0.5 per brick', '#00ff96'],
+        ['• 5 Ball maximum spawn limit', '#c8c8c8'],
+      ];
+      ctx.font = 'bold 20px Arial';
+      lines.forEach(([text, color], i) => {
+        ctx.fillStyle = color;
+        ctx.fillText(text, S.W / 2, 178 + i * 28);
+      });
+      ctx.font      = 'bold 18px Arial';
+      ctx.fillStyle = '#ffd700';
+      ctx.fillText(`🏆 HIGH SCORE: ${highScore}`, S.W / 2, 390);
+      ctx.textAlign = 'left';
+    }
+
+    const buttons = {
+      start:   { x: 300, y: 455, w: 200, h: 50, text: 'START GAME', color: '#00ffff' },
+      next:    { x: 300, y: 380, w: 200, h: 50, text: 'NEXT LEVEL', color: '#00ff96' },
+      restart: { x: 300, y: 380, w: 200, h: 50, text: 'RESTART',    color: '#00c8ff' },
+      quit:    { x: 300, y: 450, w: 200, h: 50, text: 'QUIT',       color: '#ff3232' },
+    };
+
+    function drawButton(btn, hovered) {
+      ctx.fillStyle = 'rgba(20,20,30,0.95)';
+      roundRect(ctx, btn.x, btn.y, btn.w, btn.h, 8);
+      const col = hovered ? lighten(btn.color) : btn.color;
+      ctx.strokeStyle = col;
+      ctx.lineWidth   = 2;
+      roundRectStroke(ctx, btn.x, btn.y, btn.w, btn.h, 8);
+      ctx.fillStyle   = col;
+      ctx.font        = 'bold 22px Arial';
+      ctx.textAlign   = 'center';
+      ctx.fillText(btn.text, btn.x + btn.w / 2, btn.y + btn.h / 2 + 8);
+      ctx.textAlign   = 'left';
+    }
+
+    function inButton(btn, mx, my) {
+      return mx >= btn.x && mx <= btn.x + btn.w && my >= btn.y && my <= btn.y + btn.h;
+    }
+
+    function lighten(hex) {
+      const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+      return `rgb(${Math.min(255,r+60)},${Math.min(255,g+60)},${Math.min(255,b+60)})`;
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x+r, y);
+      ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+      ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+      ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+      ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y);
+      ctx.closePath(); ctx.fill();
+    }
+
+    function roundRectStroke(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x+r, y);
+      ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+      ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+      ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+      ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y);
+      ctx.closePath(); ctx.stroke();
+    }
+
+    let mouseX = null;
+    let hoveredBtn = null;
+
+    canvas.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      hoveredBtn = null;
+      if (state === 'START' && inButton(buttons.start, mouseX, my)) hoveredBtn = 'start';
+      if (state === 'LEVEL_COMPLETE' && inButton(buttons.next, mouseX, my)) hoveredBtn = 'next';
+      if (['GAME_OVER','WIN'].includes(state)) {
+        if (inButton(buttons.restart, mouseX, my)) hoveredBtn = 'restart';
+        if (inButton(buttons.quit,    mouseX, my)) hoveredBtn = 'quit';
+      }
+    });
+
+    canvas.addEventListener('mouseleave', () => { mouseX = null; });
+
+    canvas.addEventListener('click', e => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      if (state === 'START' && inButton(buttons.start, mx, my)) { score = 0; startLevel(1); }
+      if (state === 'LEVEL_COMPLETE' && inButton(buttons.next, mx, my)) startLevel(currentLevel + 1);
+      if (['GAME_OVER','WIN'].includes(state)) {
+        if (inButton(buttons.restart, mx, my)) { score = 0; startLevel(1); }
+        if (inButton(buttons.quit,    mx, my))  state = 'START';
+      }
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') bat.movingRight = true;
+      if (e.key === 'ArrowLeft')  bat.movingLeft  = true;
+    });
+
+    document.addEventListener('keyup', e => {
+      if (e.key === 'ArrowRight') bat.movingRight = false;
+      if (e.key === 'ArrowLeft')  bat.movingLeft  = false;
+    });
+
+    let last = 0;
+    function loop(ts) {
+      last = ts;
+      drawBackground();
+
+      if (state === 'START') {
+        drawStartScreen();
+        drawButton(buttons.start, hoveredBtn === 'start');
+      }
+      else if (state === 'TRANSITION') {
+        blocks.forEach(drawBlock);
+        drawOverlay(`LEVEL ${currentLevel}`, 'Get Ready...');
+        if (ts - transitionStart > 2000) {
+          state = 'PLAYING';
+          spawnBall();
+          updateHUD();
+        }
+      }
+      else if (state === 'PLAYING') {
+        bat.update(mouseX);
+        let kills = 0;
+        for (let b of balls) kills += updateBall(b);
+        destroyedCount += kills;
+        if (destroyedCount >= 10) { spawnBall(); destroyedCount -= 10; }
+        balls = balls.filter(b => b.alive);
+        blocks.forEach(drawBlock);
+        bat.draw();
+        balls.forEach(drawBall);
+        updateHUD();
+        if (blocks.filter(b => b.alive).length === 0) state = 'LEVEL_COMPLETE';
+        if (balls.length === 0) state = 'GAME_OVER';
+      }
+      else if (state === 'LEVEL_COMPLETE') {
+        blocks.forEach(drawBlock);
+        drawOverlay('CLEARED!', `Advance to Level ${currentLevel + 1}`);
+        drawButton(buttons.next, hoveredBtn === 'next');
+      }
+      else if (state === 'GAME_OVER') {
+        drawOverlay('GAME OVER', `Level ${currentLevel} — Score: ${score}`, '#ff3232');
+        ctx.fillStyle = '#ffd700'; ctx.font = '22px Arial'; ctx.textAlign = 'center';
+        ctx.fillText(`🏆 Best: ${highScore}`, S.W / 2, 360); ctx.textAlign = 'left';
+        drawButton(buttons.restart, hoveredBtn === 'restart');
+        drawButton(buttons.quit,     hoveredBtn === 'quit');
+      }
+      else if (state === 'WIN') {
+        drawOverlay('YOU WIN!', 'Master of the Neon Grid!', '#00ff96');
+        ctx.fillStyle = '#ffd700'; ctx.font = '22px Arial'; ctx.textAlign = 'center';
+        ctx.fillText(`Final Score: ${score}  🏆 Best: ${highScore}`, S.W / 2, 360); ctx.textAlign = 'left';
+        drawButton(buttons.restart, hoveredBtn === 'restart');
+        drawButton(buttons.quit,     hoveredBtn === 'quit');
+      }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
