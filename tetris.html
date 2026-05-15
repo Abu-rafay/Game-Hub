@@ -8,6 +8,7 @@
             box-sizing: border-box;
         }
 
+<<<<<<< HEAD
         html,
         body {
             width: 100%;
@@ -15,6 +16,8 @@
             overflow: hidden;
         }
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         body {
             background:
                 radial-gradient(circle at top left, rgba(0, 255, 255, 0.12), transparent 30%),
@@ -24,10 +27,19 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+<<<<<<< HEAD
             margin: 0;
             padding: 8px;
             font-family: 'Segoe UI', sans-serif;
             color: #fff;
+=======
+            min-height: 100vh;
+            margin: 0;
+            padding: 12px;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            overflow: hidden;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             position: relative;
         }
 
@@ -41,16 +53,26 @@
         }
 
         .glow1 {
+<<<<<<< HEAD
             width: 220px;
             height: 220px;
+=======
+            width: 260px;
+            height: 260px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             background: #00ffff;
             top: 5%;
             left: 8%;
         }
 
         .glow2 {
+<<<<<<< HEAD
             width: 240px;
             height: 240px;
+=======
+            width: 280px;
+            height: 280px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             background: #8b5cf6;
             bottom: 8%;
             right: 6%;
@@ -58,8 +80,13 @@
         }
 
         .glow3 {
+<<<<<<< HEAD
             width: 180px;
             height: 180px;
+=======
+            width: 220px;
+            height: 220px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             background: #ff4fd8;
             top: 50%;
             left: 50%;
@@ -68,6 +95,7 @@
         }
 
         @keyframes floatGlow {
+<<<<<<< HEAD
             0%, 100% {
                 transform: translate(0, 0) scale(1);
             }
@@ -87,13 +115,33 @@
             gap: 14px;
             padding: 14px;
             border-radius: 24px;
+=======
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -20px) scale(1.08); }
+        }
+
+        #start-screen {
+            width: min(1000px, 92vw);
+            min-height: min(620px, calc(100vh - 24px));
+            max-height: calc(100vh - 24px);
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 24px;
+            padding: 24px;
+            border-radius: 28px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(100, 255, 255, 0.20);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
             backdrop-filter: blur(14px);
             position: relative;
             z-index: 2;
+<<<<<<< HEAD
             overflow: hidden;
+=======
+            overflow: auto;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             animation: fadeInUp 0.8s ease;
         }
 
@@ -101,6 +149,7 @@
         .start-right {
             background: rgba(10, 15, 30, 0.70);
             border: 1px solid rgba(100, 255, 255, 0.12);
+<<<<<<< HEAD
             border-radius: 20px;
             padding: 18px;
             overflow: hidden;
@@ -112,6 +161,18 @@
             flex-direction: column;
             justify-content: center;
         }
+=======
+            border-radius: 22px;
+            padding: 28px;
+        }
+
+        .start-left {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 🔥 this fixes everything */
+}
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 
         .start-right {
             flex: 0.95;
@@ -123,11 +184,16 @@
         .game-badge {
             display: inline-block;
             align-self: flex-start;
+<<<<<<< HEAD
             padding: 7px 12px;
+=======
+            padding: 8px 14px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             border-radius: 999px;
             background: rgba(0, 255, 255, 0.10);
             color: #7efcff;
             border: 1px solid rgba(126, 252, 255, 0.28);
+<<<<<<< HEAD
             font-size: 12px;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -138,6 +204,18 @@
             font-size: clamp(36px, 6vw, 68px);
             line-height: 0.95;
             margin: 0 0 12px 0;
+=======
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .start-title {
+            font-size: clamp(44px, 7vw, 82px);
+            line-height: 0.95;
+            margin: 0 0 18px 0;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             font-weight: 900;
             letter-spacing: 2px;
             background: linear-gradient(90deg, #7efcff, #ffffff, #c084fc);
@@ -146,26 +224,44 @@
         }
 
         .start-subtitle {
+<<<<<<< HEAD
             font-size: clamp(13px, 1.8vw, 16px);
             line-height: 1.45;
             color: #d6e4ff;
             max-width: 500px;
             margin-bottom: 12px;
         }
+=======
+    font-size: 18px;
+    line-height: 1.7;
+    color: #d6e4ff;
+    max-width: 500px;
+}
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 
         .feature-row {
             display: flex;
             flex-wrap: wrap;
+<<<<<<< HEAD
             gap: 8px;
             margin-bottom: 14px;
         }
 
         .feature-pill {
             padding: 8px 11px;
+=======
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .feature-pill {
+            padding: 10px 14px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             border-radius: 999px;
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.10);
             color: #eaf6ff;
+<<<<<<< HEAD
             font-size: 12px;
         }
 
@@ -178,11 +274,30 @@
 
         #start-game-btn {
             padding: 12px 24px;
+=======
+            font-size: 14px;
+        }
+
+        .start-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+
+    transform: translateY(-10px);
+}
+        #start-game-btn {
+            padding: 15px 28px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             border: none;
             border-radius: 14px;
             background: linear-gradient(90deg, #00e5ff, #7c3aed);
             color: white;
+<<<<<<< HEAD
             font-size: 15px;
+=======
+            font-size: 16px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             font-weight: 700;
             letter-spacing: 0.5px;
             cursor: pointer;
@@ -197,12 +312,21 @@
 
         .hint {
             color: #9fb3d9;
+<<<<<<< HEAD
             font-size: 13px;
         }
 
         .panel-title {
             font-size: 18px;
             margin-bottom: 10px;
+=======
+            font-size: 14px;
+        }
+
+        .panel-title {
+            font-size: 22px;
+            margin-bottom: 18px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             color: #7efcff;
             font-weight: 700;
         }
@@ -210,33 +334,54 @@
         .rule-list,
         .control-list {
             display: grid;
+<<<<<<< HEAD
             gap: 8px;
             margin-bottom: 12px;
+=======
+            gap: 12px;
+            margin-bottom: 22px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         }
 
         .rule-item,
         .control-item {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.08);
+<<<<<<< HEAD
             border-radius: 12px;
             padding: 8px 10px;
             color: #eaf6ff;
             line-height: 1.3;
             font-size: 13px;
+=======
+            border-radius: 14px;
+            padding: 12px 14px;
+            color: #eaf6ff;
+            line-height: 1.5;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         }
 
         .key {
             display: inline-block;
+<<<<<<< HEAD
             min-width: 58px;
             padding: 4px 8px;
             margin-right: 7px;
+=======
+            min-width: 64px;
+            padding: 5px 10px;
+            margin-right: 8px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             border-radius: 8px;
             background: rgba(126, 252, 255, 0.14);
             border: 1px solid rgba(126, 252, 255, 0.24);
             color: #7efcff;
             font-weight: 700;
             text-align: center;
+<<<<<<< HEAD
             font-size: 12px;
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         }
 
         #game-wrapper {
@@ -245,38 +390,64 @@
             border: 2px solid #444;
             display: none;
             z-index: 2;
+<<<<<<< HEAD
             width: min(600px, calc(100vw - 16px), calc((100vh - 16px) * 0.8571428571));
             height: min(700px, calc(100vh - 16px), calc((100vw - 16px) * 1.1666666667));
             aspect-ratio: 6 / 7;
             overflow: hidden;
             background: #000;
+=======
+            width: min(600px, 96vw, calc((100vh - 24px) * 0.8571428571));
+            max-height: calc(100vh - 24px);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         }
 
         canvas {
             display: block;
             background: #000;
             width: 100%;
+<<<<<<< HEAD
             height: 100%;
+=======
+            height: auto;
+            max-height: calc(100vh - 24px);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         }
 
         .ui-layer {
             position: absolute;
+<<<<<<< HEAD
             top: 8px;
             right: 8px;
             display: flex;
             flex-direction: column;
             gap: 8px;
+=======
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             z-index: 20;
         }
 
         button {
+<<<<<<< HEAD
             padding: 7px 10px;
+=======
+            padding: 8px 12px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             background: #1e1e1e;
             border: 1px solid #64ffff;
             color: white;
             cursor: pointer;
             border-radius: 4px;
+<<<<<<< HEAD
             font-size: 11px;
+=======
+            font-size: 12px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             transition: all 0.2s;
         }
 
@@ -290,7 +461,11 @@
             top: 45%;
             left: 50%;
             transform: translate(-50%, -50%);
+<<<<<<< HEAD
             font-size: 42px;
+=======
+            font-size: 50px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             font-weight: bold;
             color: #64ffff;
             text-shadow: 0 0 20px #64ffff;
@@ -308,6 +483,7 @@
         }
 
         @keyframes pulseFade {
+<<<<<<< HEAD
             0% {
                 opacity: 0;
                 transform: translate(-50%, -50%) scale(0.5);
@@ -326,6 +502,12 @@
                 opacity: 0;
                 transform: translate(-50%, -200%) scale(1);
             }
+=======
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translate(-50%, -200%) scale(1); }
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         }
 
         @keyframes fadeInUp {
@@ -333,7 +515,10 @@
                 opacity: 0;
                 transform: translateY(22px);
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -341,14 +526,28 @@
         }
 
         @media (max-width: 850px) {
+<<<<<<< HEAD
             #start-screen {
                 flex-direction: column;
                 gap: 10px;
                 padding: 10px;
+=======
+            body {
+                justify-content: flex-start;
+            }
+
+            #start-screen {
+                flex-direction: column;
+                min-height: auto;
+                max-height: none;
+                padding: 18px;
+                gap: 18px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             }
 
             .start-left,
             .start-right {
+<<<<<<< HEAD
                 padding: 12px;
             }
 
@@ -380,11 +579,19 @@
             .control-item {
                 padding: 7px 9px;
                 font-size: 12px;
+=======
+                padding: 20px;
+            }
+
+            .start-title {
+                font-size: 52px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             }
         }
 
         @media (max-width: 640px) {
             body {
+<<<<<<< HEAD
                 padding: 6px;
             }
 
@@ -393,10 +600,20 @@
                 height: calc(100vh - 12px);
                 max-height: calc(100vh - 12px);
                 border-radius: 18px;
+=======
+                padding: 8px;
+            }
+
+            #start-screen {
+                width: 100%;
+                padding: 14px;
+                border-radius: 20px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             }
 
             .start-left,
             .start-right {
+<<<<<<< HEAD
                 padding: 10px;
                 border-radius: 14px;
             }
@@ -446,6 +663,34 @@
             button {
                 padding: 6px 8px;
                 font-size: 10px;
+=======
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            .start-title {
+                font-size: 42px;
+            }
+
+            .start-subtitle {
+                font-size: 16px;
+                line-height: 1.5;
+            }
+
+            .feature-row,
+            .start-actions {
+                gap: 10px;
+            }
+
+            .ui-layer {
+                top: 8px;
+                right: 8px;
+            }
+
+            button {
+                padding: 7px 10px;
+                font-size: 11px;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             }
         }
     </style>
@@ -459,6 +704,7 @@
     <section id="start-screen">
         <div class="start-left">
             <div class="game-badge">Arcade Puzzle Experience</div>
+<<<<<<< HEAD
 
             <h1 class="start-title">TETRIS<br>PRO</h1>
 
@@ -466,6 +712,13 @@
                 Drop, rotate, and stack colorful blocks to clear full lines.
                 The more lines you clear, the faster the game gets.
                 Stay sharp, plan ahead, and chase your highest score.
+=======
+            <h1 class="start-title">TETRIS<br>PRO</h1>
+            <p class="start-subtitle">
+                Drop, rotate, and stack colorful blocks to clear full lines. 
+                The more lines you clear, the faster the game gets. Stay sharp, 
+                plan ahead, and chase your highest score.
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             </p>
 
             <div class="feature-row">
@@ -484,7 +737,10 @@
 
         <div class="start-right">
             <h2 class="panel-title">How to Play</h2>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             <div class="rule-list">
                 <div class="rule-item">Fill an entire row to clear it and earn points.</div>
                 <div class="rule-item">Clear more lines and your level goes up.</div>
@@ -493,7 +749,10 @@
             </div>
 
             <h2 class="panel-title">Controls</h2>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             <div class="control-list">
                 <div class="control-item"><span class="key">← / →</span> Move piece</div>
                 <div class="control-item"><span class="key">↑</span> Rotate right</div>
@@ -508,12 +767,18 @@
 
     <div id="game-wrapper">
         <div id="level-up-notify">LEVEL UP!</div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         <div class="ui-layer">
             <button id="pause-btn">PAUSE [P]</button>
             <button id="music-btn">MUSIC: 40%</button>
         </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         <canvas id="tetrisCanvas" width="600" height="700"></canvas>
     </div>
 
@@ -530,14 +795,21 @@ const sounds = {
 };
 
 sounds.music.loop = true;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 let volIdx = 2;
 const volLevels = [0, 0.1, 0.2, 0.3, 0.4, 0.5];
 
 function playSound(name) {
     if (sounds[name]) {
         sounds[name].currentTime = 0;
+<<<<<<< HEAD
         sounds[name].volume = name === 'music' ? volLevels[volIdx] : 0.5;
+=======
+        sounds[name].volume = (name === 'music') ? volLevels[volIdx] : 0.5;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         sounds[name].play().catch(() => {});
     }
 }
@@ -549,6 +821,7 @@ const X_OFFSET = 200;
 const Y_OFFSET = 70;
 
 const COLORS = {
+<<<<<<< HEAD
     I: '#00ffff',
     O: '#ffff00',
     T: '#b266ff',
@@ -559,10 +832,23 @@ const COLORS = {
     GRID: 'rgba(140, 255, 255, 0.32)',
     PANEL: '#1e1e1e',
     GHOST: 'rgba(255, 255, 255, 0.35)'
+=======
+    'I': '#00ffff',
+    'O': '#ffff00',
+    'T': '#b266ff',
+    'S': '#39ff88',
+    'Z': '#ff5a5a',
+    'J': '#4d79ff',
+    'L': '#ffb347',
+    'GRID': 'rgba(140, 255, 255, 0.32)',
+    'PANEL': '#1e1e1e',
+    'GHOST': 'rgba(255, 255, 255, 0.35)'
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 };
 
 let canvas = document.getElementById('tetrisCanvas');
 let ctx = canvas.getContext('2d');
+<<<<<<< HEAD
 
 let board = Array.from({ length: 20 }, () => Array(10).fill(0));
 
@@ -591,6 +877,20 @@ let totalLines = 0;
 let combo = 0;
 let highScore = localStorage.getItem('tetrisHS') || 0;
 
+=======
+let board = Array.from({ length: 20 }, () => Array(10).fill(0));
+
+const SHAPES = {
+    'I': [[1, 1, 1, 1]], 'O': [[1, 1], [1, 1]], 'T': [[0, 1, 0], [1, 1, 1]],
+    'S': [[0, 1, 1], [1, 1, 0]], 'Z': [[1, 1, 0], [0, 1, 1]],
+    'J': [[1, 0, 0], [1, 1, 1]], 'L': [[0, 0, 1], [1, 1, 1]]
+};
+
+let currType, currShape, nextType, nextShape, heldType = null;
+let pieceX = 4, pieceY = 0;
+let score = 0, level = 1, totalLines = 0, combo = 0;
+let highScore = localStorage.getItem('tetrisHS') || 0;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 let gameState = "START";
 let canHold = true;
 let hardDropped = false;
@@ -608,6 +908,7 @@ function collide(shape, x, y) {
     for (let r = 0; r < shape.length; r++) {
         for (let c = 0; c < shape[r].length; c++) {
             if (shape[r][c] !== 0) {
+<<<<<<< HEAD
                 let bx = x + c;
                 let by = y + r;
 
@@ -623,12 +924,20 @@ function collide(shape, x, y) {
         }
     }
 
+=======
+                let bx = x + c, by = y + r;
+                if (bx < 0 || bx >= 10 || by >= 20 || (by >= 0 && board[by][bx] !== 0)) return true;
+            }
+        }
+    }
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     return false;
 }
 
 function resetPiece() {
     currType = nextType || Object.keys(SHAPES)[Math.floor(Math.random() * 7)];
     currShape = SHAPES[currType];
+<<<<<<< HEAD
 
     nextType = Object.keys(SHAPES)[Math.floor(Math.random() * 7)];
     nextShape = SHAPES[nextType];
@@ -636,6 +945,12 @@ function resetPiece() {
     pieceX = 4;
     pieceY = 0;
 
+=======
+    nextType = Object.keys(SHAPES)[Math.floor(Math.random() * 7)];
+    nextShape = SHAPES[nextType];
+    pieceX = 4;
+    pieceY = 0;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     canHold = true;
     hardDropped = false;
 
@@ -648,6 +963,7 @@ function resetPiece() {
 
 function clearLines() {
     let linesCleared = 0;
+<<<<<<< HEAD
 
     outer:
     for (let r = 19; r >= 0; r--) {
@@ -657,11 +973,18 @@ function clearLines() {
             }
         }
 
+=======
+    outer: for (let r = 19; r >= 0; r--) {
+        for (let c = 0; c < 10; c++) {
+            if (board[r][c] === 0) continue outer;
+        }
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         board.splice(r, 1);
         board.unshift(Array(10).fill(0));
         linesCleared++;
         r++;
     }
+<<<<<<< HEAD
 
     if (linesCleared > 0) {
         playSound('clear');
@@ -677,17 +1000,33 @@ function clearLines() {
 
         let bonus = hardDropped ? 2 : 1;
 
+=======
+    
+    if (linesCleared > 0) {
+        playSound('clear');
+        combo++;
+        let base = {1: 1, 2: 3, 3: 6, 4: 12}[linesCleared] || linesCleared * 3;
+        let bonus = hardDropped ? 2 : 1;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         score += (base * bonus) + (combo * 10);
         totalLines += linesCleared;
 
         let newLevel = Math.floor(totalLines / 10) + 1;
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         if (newLevel > level) {
             level = newLevel;
             playSound('levelup');
             triggerLevelUpUI();
         }
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         dropInterval = Math.max(100, 600 - (level - 1) * 50);
 
         if (score > highScore) {
@@ -701,7 +1040,10 @@ function clearLines() {
 
 function triggerLevelUpUI() {
     const el = document.getElementById('level-up-notify');
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     el.classList.remove('animate-level');
     void el.offsetWidth;
     el.classList.add('animate-level');
@@ -709,7 +1051,10 @@ function triggerLevelUpUI() {
 
 function drop() {
     pieceY++;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     if (collide(currShape, pieceX, pieceY)) {
         pieceY--;
         merge();
@@ -717,38 +1062,59 @@ function drop() {
         resetPiece();
         playSound('landing');
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     dropCounter = 0;
 }
 
 function merge() {
     currShape.forEach((row, r) => {
         row.forEach((value, c) => {
+<<<<<<< HEAD
             if (value !== 0) {
                 board[pieceY + r][pieceX + c] = COLORS[currType];
             }
+=======
+            if (value !== 0) board[pieceY + r][pieceX + c] = COLORS[currType];
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         });
     });
 }
 
 function draw() {
     ctx.clearRect(0, 0, 600, 700);
+<<<<<<< HEAD
 
     let grad = ctx.createLinearGradient(0, 0, 0, 700);
     grad.addColorStop(0, "#171727");
     grad.addColorStop(1, "#20203a");
 
+=======
+    
+    let grad = ctx.createLinearGradient(0, 0, 0, 700);
+    grad.addColorStop(0, "#171727");
+    grad.addColorStop(1, "#20203a");
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 600, 700);
 
     ctx.font = "bold 60px Arial";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
+<<<<<<< HEAD
     ctx.fillText("TETRIS", 300, 50 + Math.sin(Date.now() / 500) * 5);
 
     ctx.fillStyle = COLORS.PANEL;
     ctx.fillRect(20, 70, 160, 600);
 
+=======
+    ctx.fillText("TETRIS", 300, 50 + Math.sin(Date.now()/500)*5);
+
+    ctx.fillStyle = COLORS.PANEL;
+    ctx.fillRect(20, 70, 160, 600);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     ctx.strokeStyle = "#7efcff";
     ctx.lineWidth = 2;
     ctx.strokeRect(20, 70, 160, 600);
@@ -756,25 +1122,36 @@ function draw() {
     let boardGrad = ctx.createLinearGradient(0, Y_OFFSET, 0, Y_OFFSET + PLAY_HEIGHT);
     boardGrad.addColorStop(0, "#101522");
     boardGrad.addColorStop(1, "#151b2d");
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     ctx.fillStyle = boardGrad;
     ctx.fillRect(X_OFFSET, Y_OFFSET, PLAY_WIDTH, PLAY_HEIGHT);
 
     board.forEach((row, r) => {
         row.forEach((val, c) => {
+<<<<<<< HEAD
             if (val !== 0) {
                 drawBlock(c, r, val, X_OFFSET, Y_OFFSET);
             }
+=======
+            if (val !== 0) drawBlock(c, r, val, X_OFFSET, Y_OFFSET);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         });
     });
 
     if (gameState === "PLAYING" || gameState === "PAUSED") {
         let ghostY = pieceY;
+<<<<<<< HEAD
 
         while (!collide(currShape, pieceX, ghostY + 1)) {
             ghostY++;
         }
 
+=======
+        while (!collide(currShape, pieceX, ghostY + 1)) ghostY++;
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         drawPiece(currShape, pieceX, ghostY, X_OFFSET, Y_OFFSET, true);
         drawPiece(currShape, pieceX, pieceY, X_OFFSET, Y_OFFSET);
     }
@@ -782,6 +1159,7 @@ function draw() {
     drawGrid();
     drawSidePanel();
 
+<<<<<<< HEAD
     if (gameState === "PAUSED") {
         drawOverlay("PAUSED", "Press P to Resume");
     }
@@ -789,6 +1167,12 @@ function draw() {
     if (gameState === "GAME_OVER") {
         drawOverlay("GAME OVER", "Score: " + score);
     }
+=======
+    if (gameState === "PAUSED") drawOverlay("PAUSED", "Press P to Resume");
+    if (gameState === "GAME_OVER") drawOverlay("GAME OVER", "Score: " + score);
+
+    requestAnimationFrame(update);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 }
 
 function drawBlock(x, y, color, offX, offY, isGhost = false) {
@@ -798,11 +1182,17 @@ function drawBlock(x, y, color, offX, offY, isGhost = false) {
     if (isGhost) {
         ctx.fillStyle = COLORS.GHOST;
         ctx.fillRect(px + 2, py + 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+<<<<<<< HEAD
 
         ctx.strokeStyle = "rgba(255,255,255,0.65)";
         ctx.lineWidth = 2;
         ctx.strokeRect(px + 2, py + 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
 
+=======
+        ctx.strokeStyle = "rgba(255,255,255,0.65)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(px + 2, py + 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         return;
     }
 
@@ -812,7 +1202,10 @@ function drawBlock(x, y, color, offX, offY, isGhost = false) {
     let shine = ctx.createLinearGradient(px, py, px, py + BLOCK_SIZE);
     shine.addColorStop(0, "rgba(255,255,255,0.30)");
     shine.addColorStop(1, "rgba(0,0,0,0.18)");
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     ctx.fillStyle = shine;
     ctx.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
 
@@ -827,9 +1220,13 @@ function drawBlock(x, y, color, offX, offY, isGhost = false) {
 function drawPiece(shape, x, y, offX, offY, isGhost = false) {
     shape.forEach((row, r) => {
         row.forEach((val, c) => {
+<<<<<<< HEAD
             if (val !== 0) {
                 drawBlock(x + c, y + r, COLORS[currType], offX, offY, isGhost);
             }
+=======
+            if (val !== 0) drawBlock(x + c, y + r, COLORS[currType], offX, offY, isGhost);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         });
     });
 }
@@ -861,6 +1258,7 @@ function drawSidePanel() {
     ctx.textAlign = "center";
     ctx.fillStyle = "white";
     ctx.font = "18px Arial";
+<<<<<<< HEAD
 
     ctx.fillText("HOLD", 100, 100);
 
@@ -885,6 +1283,17 @@ function drawSidePanel() {
         ctx.fillStyle = "white";
         ctx.fillText(s[0], 100, 400 + i * 60);
 
+=======
+    ctx.fillText("HOLD", 100, 100);
+    if (heldType) drawPiece(SHAPES[heldType], -5.5, 1.5, X_OFFSET, Y_OFFSET);
+    ctx.fillText("NEXT", 100, 220);
+    if (nextShape) drawPiece(nextShape, -5.5, 5.5, X_OFFSET, Y_OFFSET);
+
+    let stats = [["SCORE", score], ["BEST", highScore], ["LEVEL", level], ["COMBO", `x${combo}`]];
+    stats.forEach((s, i) => {
+        ctx.fillStyle = "white";
+        ctx.fillText(s[0], 100, 400 + i * 60);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         ctx.fillStyle = "#7efcff";
         ctx.fillText(s[1], 100, 425 + i * 60);
     });
@@ -893,12 +1302,18 @@ function drawSidePanel() {
 function drawOverlay(title, subtitle) {
     ctx.fillStyle = "rgba(0,0,0,0.75)";
     ctx.fillRect(0, 0, 600, 700);
+<<<<<<< HEAD
 
     ctx.fillStyle = "white";
     ctx.font = "bold 45px Arial";
     ctx.textAlign = "center";
     ctx.fillText(title, 300, 340);
 
+=======
+    ctx.fillStyle = "white";
+    ctx.font = "bold 45px Arial";
+    ctx.fillText(title, 300, 340);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     ctx.font = "20px Arial";
     ctx.fillText(subtitle, 300, 380);
 }
@@ -906,6 +1321,7 @@ function drawOverlay(title, subtitle) {
 function update(time = 0) {
     const dt = time - lastTime;
     lastTime = time;
+<<<<<<< HEAD
 
     if (gameState === "PLAYING") {
         dropCounter += dt;
@@ -918,10 +1334,18 @@ function update(time = 0) {
     draw();
 
     requestAnimationFrame(update);
+=======
+    if (gameState === "PLAYING") {
+        dropCounter += dt;
+        if (dropCounter > dropInterval) drop();
+    }
+    draw();
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 }
 
 window.addEventListener('keydown', e => {
     const k = e.key.toLowerCase();
+<<<<<<< HEAD
 
     if (
         [
@@ -974,20 +1398,44 @@ window.addEventListener('keydown', e => {
     if (k === 'arrowup') {
         let rot = rotate(currShape, 1);
 
+=======
+    if (k === 'p') togglePause();
+    if (gameState !== "PLAYING") return;
+
+    if (k === 'arrowleft') {
+        pieceX--;
+        if (collide(currShape, pieceX, pieceY)) pieceX++;
+        else playSound('move');
+    }
+    if (k === 'arrowright') {
+        pieceX++;
+        if (collide(currShape, pieceX, pieceY)) pieceX--;
+        else playSound('move');
+    }
+    if (k === 'arrowdown') drop();
+    if (k === 'arrowup') {
+        let rot = rotate(currShape, 1);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         if (!collide(rot, pieceX, pieceY)) {
             currShape = rot;
             playSound('rotate');
         }
     }
+<<<<<<< HEAD
 
     if (k === 'z') {
         let rot = rotate(currShape, -1);
 
+=======
+    if (k === 'z') {
+        let rot = rotate(currShape, -1);
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         if (!collide(rot, pieceX, pieceY)) {
             currShape = rot;
             playSound('rotate');
         }
     }
+<<<<<<< HEAD
 
     if (k === ' ' || e.key === 'Spacebar') {
         while (!collide(currShape, pieceX, pieceY + 1)) {
@@ -1002,6 +1450,16 @@ window.addEventListener('keydown', e => {
         if (canHold) {
             playSound('click');
 
+=======
+    if (k === ' ' || e.key === 'Spacebar') {
+        while (!collide(currShape, pieceX, pieceY + 1)) pieceY++;
+        hardDropped = true;
+        drop();
+    }
+    if (k === 'c') {
+        if (canHold) {
+            playSound('click');
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             if (heldType === null) {
                 heldType = currType;
                 resetPiece();
@@ -1011,13 +1469,24 @@ window.addEventListener('keydown', e => {
                 pieceX = 4;
                 pieceY = 0;
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
             canHold = false;
         }
     }
 });
 
+<<<<<<< HEAD
 function resetGameValues() {
+=======
+function startGameFromLanding() {
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('game-wrapper').style.display = 'block';
+
+    playSound('click');
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     board = Array.from({ length: 20 }, () => Array(10).fill(0));
     score = 0;
     level = 1;
@@ -1026,6 +1495,7 @@ function resetGameValues() {
     heldType = null;
     nextType = null;
     nextShape = null;
+<<<<<<< HEAD
     dropCounter = 0;
     dropInterval = 600;
     canHold = true;
@@ -1043,6 +1513,10 @@ function startGameFromLanding() {
 
     gameState = "PLAYING";
     sounds.music.volume = volLevels[volIdx];
+=======
+    resetPiece();
+    gameState = "PLAYING";
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
     sounds.music.play().catch(() => {});
 }
 
@@ -1051,11 +1525,21 @@ document.getElementById('start-game-btn').addEventListener('click', startGameFro
 canvas.addEventListener('mousedown', () => {
     if (gameState === "GAME_OVER") {
         playSound('click');
+<<<<<<< HEAD
 
         resetGameValues();
 
         gameState = "PLAYING";
         sounds.music.volume = volLevels[volIdx];
+=======
+        board = Array.from({ length: 20 }, () => Array(10).fill(0));
+        score = 0;
+        level = 1;
+        totalLines = 0;
+        combo = 0;
+        resetPiece();
+        gameState = "PLAYING";
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         sounds.music.play().catch(() => {});
     }
 });
@@ -1064,13 +1548,19 @@ function togglePause() {
     if (gameState === "PLAYING") {
         gameState = "PAUSED";
         sounds.music.pause();
+<<<<<<< HEAD
     } else if (gameState === "PAUSED") {
+=======
+    }
+    else if (gameState === "PAUSED") {
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
         gameState = "PLAYING";
         sounds.music.play().catch(() => {});
     }
 }
 
 document.getElementById('pause-btn').onclick = togglePause;
+<<<<<<< HEAD
 
 document.getElementById('music-btn').onclick = () => {
     volIdx = (volIdx + 1) % volLevels.length;
@@ -1082,6 +1572,16 @@ document.getElementById('music-btn').onclick = () => {
 
 resetPiece();
 requestAnimationFrame(update);
+=======
+document.getElementById('music-btn').onclick = () => {
+    volIdx = (volIdx + 1) % volLevels.length;
+    sounds.music.volume = volLevels[volIdx];
+    document.getElementById('music-btn').innerText = `MUSIC: ${Math.round(volLevels[volIdx]*100)}%`;
+};
+
+resetPiece();
+update();
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 </script>
 </body>
 </html>

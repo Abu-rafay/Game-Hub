@@ -24,11 +24,14 @@
   padding: 0;
 }
 
+<<<<<<< HEAD
 html,
 body {
   min-height: 100%;
 }
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 body {
   min-height: 100vh;
   color: var(--text);
@@ -294,7 +297,10 @@ header a:hover {
   min-height: 650px;
   border: none;
   background: rgba(255,255,255,0.9);
+<<<<<<< HEAD
   overflow: hidden;
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 }
 
 /* placeholder */
@@ -482,6 +488,7 @@ header a:hover {
   .placeholder-box {
     padding: 2rem 1.2rem;
   }
+<<<<<<< HEAD
 }
 
 /* ==============================
@@ -1011,4 +1018,6 @@ body:has(.page-shell) .bg-animation {
   .page-shell .menu-box {
     max-height: 96vh;
   }
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 }

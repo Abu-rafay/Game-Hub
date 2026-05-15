@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 /* ==============================
    GAME HUB JAVASCRIPT
 ================================= */
 
+=======
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
 const stage = document.getElementById('stage');
 const currentGame = document.getElementById('currentGame');
 const placeholder = document.getElementById('placeholder');
@@ -29,6 +32,7 @@ function loadGame(path, btn) {
   );
 }
 
+<<<<<<< HEAD
 if (stage && currentGame && placeholder && buttons.length > 0) {
   buttons.forEach(btn => {
     btn.addEventListener('click', function (e) {
@@ -1378,3 +1382,12 @@ if (document.getElementById("gameCanvas")) {
 
   init();
 }
+=======
+buttons.forEach(btn => {
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    const path = this.getAttribute('data-path');
+    loadGame(path, this);
+  });
+});
+>>>>>>> 1f44c87b5d66bbe8b5b9f1d8cd8487396b24dd35
