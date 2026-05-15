@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ink Spiller</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f7f7fb, #eaf2ff);
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .game-shell {
+      width: min(1000px, 100%);
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 24px 65px rgba(0,0,0,0.18);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      position: relative;
+    }
+
+    .game-area {
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      color: #333;
+    }
+
+    .title-box p {
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .moves-box {
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 18px;
+      padding: 14px 25px;
+      text-align: center;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    }
+
+    .moves-box span {
+      display: block;
+      font-weight: bold;
+      color: #777;
+      letter-spacing: 1px;
+    }
+
+    .moves-box strong {
+      font-size: 2rem;
+      color: #333;
+    }
+
+    .board-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .board {
+      width: 430px;
+      height: 430px;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+      border: 5px solid #222;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #111;
+      box-shadow: 0 18px 35px rgba(0,0,0,0.18);
+    }
+
+    .cell {
+      border: 1px solid rgba(0,0,0,0.45);
+    }
+
+    .red { background: #dc3232; }
+    .green { background: #32b450; }
+    .blue { background: #326edc; }
+    .yellow { background: #f0dc3c; }
+    .orange { background: #f08c28; }
+    .purple { background: #a046c8; }
+
+    .life-meter {
+      width: 38px;
+      height: 430px;
+      border: 4px solid #222;
+      border-radius: 999px;
+      background: #eee;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .life-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top, #dc3c3c, #e6c832, #3cb450);
+      transition: height 0.3s ease;
+    }
+
+    .palette-title {
+      text-align: center;
+      font-weight: bold;
+      color: #444;
+      font-size: 1.1rem;
+      margin-top: 5px;
+    }
+
+    .palette {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .palette-btn {
+      width: 55px;
+      height: 55px;
+      border: 4px solid #222;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      transition: 0.2s;
+    }
+
+    .palette-btn:hover {
+      transform: translateY(-3px) scale(1.08);
+    }
+
+    .side-panel {
+      background: #fafafa;
+      border-left: 2px solid #eee;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+    }
+
+    .panel-card h2 {
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    .panel-card p {
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .score-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .score-line:last-child {
+      border-bottom: none;
+    }
+
+    .score-line span {
+      color: #777;
+    }
+
+    .score-line strong {
+      color: #333;
+    }
+
+    .difficulty-buttons {
+      display: grid;
+      gap: 8px;
+    }
+
+    .difficulty-buttons button,
+    .action-btn {
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .difficulty-buttons button {
+      background: #eee;
+      color: #333;
+    }
+
+    .difficulty-buttons button:hover {
+      background: #ddd;
+    }
+
+    .action-btn {
+      background: linear-gradient(135deg, #dc6450, #b94a38);
+      color: white;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .start-overlay,
+    .end-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(245, 247, 252, 0.97);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      z-index: 10;
+    }
+
+    .end-overlay {
+      display: none;
+    }
+
+    .start-box,
+    .end-box {
+      width: min(580px, 100%);
+      text-align: center;
+      background: white;
+      border-radius: 28px;
+      padding: 35px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+    }
+
+    .start-box h2,
+    .end-box h2 {
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .start-box p,
+    .end-box p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .start-button,
+    .play-again-button {
+      border: none;
+      background: linear-gradient(135deg, #326edc, #32b450);
+      color: white;
+      padding: 14px 35px;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 14px 28px rgba(50,110,220,0.25);
+    }
+
+    @media (max-width: 850px) {
+      .game-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .side-panel {
+        display: none;
+      }
+
+      .board {
+        width: 340px;
+        height: 340px;
+      }
+
+      .life-meter {
+        height: 340px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="game-shell">
+
+    <section class="game-area">
+
+      <div class="top-row">
+        <div class="title-box">
+          <h1>Ink Spiller</h1>
+          <p>Flood the whole board with one color before moves run out.</p>
+        </div>
+
+        <div class="moves-box">
+          <span>Moves Left</span>
+          <strong id="movesLeft">20</strong>
+        </div>
+      </div>
+
+      <div class="board-wrap">
+        <div class="board" id="board"></div>
+
+        <div class="life-meter">
+          <div class="life-fill" id="lifeFill"></div>
+        </div>
+      </div>
+
+      <div class="palette-title">Choose a color to fill the board</div>
+
+      <div class="palette">
+        <button class="palette-btn red" data-color="red"></button>
+        <button class="palette-btn green" data-color="green"></button>
+        <button class="palette-btn blue" data-color="blue"></button>
+        <button class="palette-btn yellow" data-color="yellow"></button>
+        <button class="palette-btn orange" data-color="orange"></button>
+        <button class="palette-btn purple" data-color="purple"></button>
+      </div>
+
+    </section>
+
+    <aside class="side-panel">
+
+      <div class="panel-card">
+        <h2>Game Info</h2>
+
+        <div class="score-line">
+          <span>Best</span>
+          <strong id="bestScore">--</strong>
+        </div>
+
+        <div class="score-line">
+          <span>Score</span>
+          <strong id="scoreText">0</strong>
+        </div>
+
+        <div class="score-line">
+          <span>Board</span>
+          <strong>10 x 10</strong>
+        </div>
+
+        <div class="score-line">
+          <span>Difficulty</span>
+          <strong id="difficultyText">Medium</strong>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <h2>How to Play</h2>
+        <p>
+          Start from the top-left color region. Pick a color from the choices.
+          The color will spread across connected blocks. Make the whole board
+          one color before your moves finish.
+        </p>
+      </div>
+
+      <div class="panel-card">
+        <h2>Difficulty</h2>
+
+        <div class="difficulty-buttons">
+          <button onclick="setDifficulty('Easy')">Easy - 25 moves</button>
+          <button onclick="setDifficulty('Medium')">Medium - 20 moves</button>
+          <button onclick="setDifficulty('Hard')">Hard - 15 moves</button>
+        </div>
+      </div>
+
+      <button class="action-btn" onclick="resetGame()">Reset</button>
+
+    </aside>
+
+    <section class="start-overlay" id="startOverlay">
+      <div class="start-box">
+        <h2>Ink Spill</h2>
+
+        <p>
+          Controls: Click one of the color buttons under the board.
+          Your goal is to flood the whole board with one color before moves run out.
+        </p>
+
+        <button class="start-button" onclick="startGame()">Start Game</button>
+      </div>
+    </section>
+
+    <section class="end-overlay" id="endOverlay">
+      <div class="end-box">
+        <h2 id="endTitle">Game Over</h2>
+
+        <p id="endMessage"></p>
+
+        <button class="play-again-button" onclick="resetGame()">Play Again</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const boardElement = document.getElementById("board");
+    const movesLeftElement = document.getElementById("movesLeft");
+    const scoreText = document.getElementById("scoreText");
+    const difficultyText = document.getElementById("difficultyText");
+    const startOverlay = document.getElementById("startOverlay");
+    const endOverlay = document.getElementById("endOverlay");
+    const endTitle = document.getElementById("endTitle");
+    const endMessage = document.getElementById("endMessage");
+    const lifeFill = document.getElementById("lifeFill");
+    const bestScoreElement = document.getElementById("bestScore");
+
+    const colors = ["red", "green", "blue", "yellow", "orange", "purple"];
+
+    let board = [];
+    let boardSize = 10;
+    let movesLeft = 20;
+    let maxMoves = 20;
+    let score = 0;
+    let difficulty = "Medium";
+    let gameStarted = false;
+
+    let bestScore = localStorage.getItem("inkSpillerBestScore");
+
+    if (bestScore !== null) {
+      bestScoreElement.textContent = bestScore;
+    }
+
+    function createBoard() {
+      board = [];
+
+      for (let row = 0; row < boardSize; row++) {
+        let newRow = [];
+
+        for (let col = 0; col < boardSize; col++) {
+          let randomColor = colors[Math.floor(Math.random() * colors.length)];
+          newRow.push(randomColor);
+        }
+
+        board.push(newRow);
+      }
+
+      drawBoard();
+    }
+
+    function drawBoard() {
+      boardElement.innerHTML = "";
+
+      for (let row = 0; row < boardSize; row++) {
+        for (let col = 0; col < boardSize; col++) {
+          let cell = document.createElement("div");
+          cell.className = "cell " + board[row][col];
+          boardElement.appendChild(cell);
+        }
+      }
+    }
+
+    function getFloodCells() {
+      const startColor = board[0][0];
+      const visited = [];
+      const floodCells = [];
+
+      for (let row = 0; row < boardSize; row++) {
+        visited[row] = [];
+
+        for (let col = 0; col < boardSize; col++) {
+          visited[row][col] = false;
+        }
+      }
+
+      function search(row, col) {
+        if (row < 0 || row >= boardSize || col < 0 || col >= boardSize) {
+          return;
+        }
+
+        if (visited[row][col]) {
+          return;
+        }
+
+        if (board[row][col] !== startColor) {
+          return;
+        }
+
+        visited[row][col] = true;
+        floodCells.push([row, col]);
+
+        search(row + 1, col);
+        search(row - 1, col);
+        search(row, col + 1);
+        search(row, col - 1);
+      }
+
+      search(0, 0);
+
+      return floodCells;
+    }
+
+    function chooseColor(newColor) {
+      if (!gameStarted) {
+        return;
+      }
+
+      if (movesLeft <= 0) {
+        return;
+      }
+
+      const currentColor = board[0][0];
+
+      if (newColor === currentColor) {
+        return;
+      }
+
+      const floodCells = getFloodCells();
+
+      for (let i = 0; i < floodCells.length; i++) {
+        let row = floodCells[i][0];
+        let col = floodCells[i][1];
+
+        board[row][col] = newColor;
+      }
+
+      movesLeft--;
+      score += floodCells.length * 10;
+
+      updateUI();
+      drawBoard();
+
+      if (checkWin()) {
+        endGame(true);
+      } else if (movesLeft <= 0) {
+        endGame(false);
+      }
+    }
+
+    function checkWin() {
+      const firstColor = board[0][0];
+
+      for (let row = 0; row < boardSize; row++) {
+        for (let col = 0; col < boardSize; col++) {
+          if (board[row][col] !== firstColor) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    function updateUI() {
+      movesLeftElement.textContent = movesLeft;
+      scoreText.textContent = score;
+      difficultyText.textContent = difficulty;
+
+      let percent = (movesLeft / maxMoves) * 100;
+      lifeFill.style.height = percent + "%";
+    }
+
+    function startGame() {
+      gameStarted = true;
+      startOverlay.style.display = "none";
+      resetGameOnly();
+    }
+
+    function resetGameOnly() {
+      score = 0;
+      movesLeft = maxMoves;
+      createBoard();
+      updateUI();
+      endOverlay.style.display = "none";
+    }
+
+    function resetGame() {
+      gameStarted = true;
+      startOverlay.style.display = "none";
+      endOverlay.style.display = "none";
+      resetGameOnly();
+    }
+
+    function endGame(playerWon) {
+      gameStarted = false;
+
+      if (bestScore === null || score > Number(bestScore)) {
+        bestScore = score;
+        localStorage.setItem("inkSpillerBestScore", bestScore);
+        bestScoreElement.textContent = bestScore;
+      }
+
+      if (playerWon) {
+        endTitle.textContent = "You Win!";
+        endMessage.textContent = "Good job! You filled the whole board. Your final score is " + score + ".";
+      } else {
+        endTitle.textContent = "Game Over";
+        endMessage.textContent = "You ran out of moves. Your final score is " + score + ".";
+      }
+
+      endOverlay.style.display = "flex";
+    }
+
+    function setDifficulty(level) {
+      difficulty = level;
+
+      if (level === "Easy") {
+        maxMoves = 25;
+      } else if (level === "Medium") {
+        maxMoves = 20;
+      } else if (level === "Hard") {
+        maxMoves = 15;
+      }
+
+      resetGame();
+    }
+
+    const paletteButtons = document.querySelectorAll(".palette-btn");
+
+    paletteButtons.forEach(function(button) {
+      button.addEventListener("click", function() {
+        const selectedColor = button.dataset.color;
+        chooseColor(selectedColor);
+      });
+    });
+
+    createBoard();
+    updateUI();
+  </script>
+
+</body>
+</html>

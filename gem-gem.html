@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fruit Match-3 Game</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top left, #fff2b8, transparent 30%),
+                  radial-gradient(circle at bottom right, #ffd6e7, transparent 35%),
+                  linear-gradient(135deg, #e9fff3, #f5f7ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2d2d2d;
+      padding: 12px;
+    }
+
+    .game-shell {
+      width: min(880px, 100%);
+      height: min(720px, calc(100vh - 24px));
+      background: rgba(255, 255, 255, 0.93);
+      border: 2px solid rgba(0, 0, 0, 0.08);
+      border-radius: 28px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .game-area {
+      height: 100%;
+      padding: 14px 22px 18px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .title-box h1 {
+      font-size: clamp(1.8rem, 4vw, 3.1rem);
+      line-height: 1;
+      color: #2f2f2f;
+    }
+
+    .title-box p {
+      margin-top: 6px;
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .stat-box {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mini-stat {
+      background: #fff;
+      border: 2px solid #e2e2e2;
+      border-radius: 16px;
+      padding: 8px 12px;
+      min-width: 92px;
+      text-align: center;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    .mini-stat span {
+      display: block;
+      font-size: 0.68rem;
+      color: #777;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .mini-stat strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 1.35rem;
+      color: #333;
+    }
+
+    .combo-banner {
+      min-height: 28px;
+      text-align: center;
+      font-weight: bold;
+      color: #e95c20;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .board-wrap {
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    .board {
+      width: min(520px, calc(100vh - 210px), 100%);
+      max-width: 520px;
+      aspect-ratio: 1 / 1;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      background: #273043;
+      border: 5px solid #273043;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 35px rgba(0, 0, 0, 0.2);
+      touch-action: manipulation;
+    }
+
+    .cell {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.45rem, 4vw, 2.75rem);
+      line-height: 1;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.18);
+      user-select: none;
+      transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .cell:hover {
+      transform: scale(1.04);
+      background: rgba(255, 255, 255, 0.3);
+      z-index: 2;
+    }
+
+    .cell.selected {
+      outline: 4px solid #ffe066;
+      outline-offset: -5px;
+      background: rgba(255, 240, 120, 0.32);
+    }
+
+    .cell.pop {
+      animation: popFruit 0.35s ease forwards;
+    }
+
+    .cell.drop {
+      animation: dropFruit 0.28s ease;
+    }
+
+    @keyframes popFruit {
+      0% { transform: scale(1); opacity: 1; filter: brightness(1); }
+      50% { transform: scale(1.35) rotate(10deg); opacity: 0.85; filter: brightness(1.25); }
+      100% { transform: scale(0); opacity: 0; filter: brightness(1.5); }
+    }
+
+    @keyframes dropFruit {
+      0% { transform: translateY(-22px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+
+    .difficulty-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .difficulty-buttons button,
+    .action-btn,
+    .start-button,
+    .play-again-button {
+      border: none;
+      border-radius: 13px;
+      padding: 10px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: transform 0.16s ease, filter 0.16s ease;
+    }
+
+    .difficulty-buttons button {
+      background: #eef2ff;
+      color: #333;
+      border: 1px solid #dce2ff;
+      flex: 1;
+    }
+
+    .difficulty-buttons button.active {
+      background: linear-gradient(135deg, #3fcf7f, #2d8cff);
+      color: #fff;
+    }
+
+    .difficulty-buttons button:hover,
+    .action-btn:hover,
+    .start-button:hover,
+    .play-again-button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.03);
+    }
+
+    .action-btn {
+      width: 100%;
+      margin-top: 8px;
+      background: linear-gradient(135deg, #ff8a4c, #e64f45);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      padding: 10px 12px;
+    }
+
+    .start-overlay,
+    .end-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(247, 250, 255, 0.97);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      z-index: 10;
+    }
+
+    .end-overlay {
+      display: none;
+    }
+
+    .start-box,
+    .end-box {
+      width: min(620px, 100%);
+      background: #fff;
+      border: 2px solid rgba(0, 0, 0, 0.08);
+      border-radius: 28px;
+      padding: 34px 28px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+    }
+
+    .start-box h2,
+    .end-box h2 {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    .start-box p,
+    .end-box p {
+      color: #666;
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+
+    .start-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 18px 0 22px;
+    }
+
+    .start-options button {
+      border: 2px solid #e1e1e1;
+      background: #f7f7f7;
+      border-radius: 14px;
+      padding: 14px 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .start-options button.active {
+      background: linear-gradient(135deg, #3fcf7f, #2d8cff);
+      color: white;
+      border-color: transparent;
+    }
+
+    .start-button,
+    .play-again-button {
+      background: linear-gradient(135deg, #2d8cff, #3fcf7f);
+      color: #fff;
+      padding: 14px 34px;
+      box-shadow: 0 14px 28px rgba(45, 140, 255, 0.25);
+    }
+
+    @media (max-width: 760px) {
+      .game-shell {
+        min-height: calc(100vh - 24px);
+      }
+
+      .game-area {
+        min-height: calc(100vh - 24px);
+      }
+
+      .top-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .stat-box {
+        justify-content: stretch;
+      }
+
+      .mini-stat {
+        flex: 1;
+      }
+
+      .board {
+        width: min(380px, 100%);
+        min-width: 260px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .game-area {
+        padding: 14px;
+      }
+
+      .start-options {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="game-shell">
+    <section class="game-area">
+      <div class="top-row">
+        <div class="title-box">
+          <h1>Fruit Match</h1>
+          <p>Swap fruits, match 3 or more, and finish the challenge.</p>
+        </div>
+
+        <div class="stat-box">
+          <div class="mini-stat">
+            <span>Score</span>
+            <strong id="scoreText">0</strong>
+          </div>
+          <div class="mini-stat">
+            <span>Moves</span>
+            <strong id="movesText">25</strong>
+          </div>
+          <div class="mini-stat">
+            <span>Goal</span>
+            <strong id="goalText">600</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo-banner" id="comboBanner"></div>
+
+      <div class="board-wrap">
+        <div class="board" id="board"></div>
+      </div>
+    </section>
+
+    <section class="start-overlay" id="startOverlay">
+      <div class="start-box">
+        <h2>🍓 Fruit Match</h2>
+        <p>
+          This is the upgraded HTML/CSS/JavaScript version of the gem game.
+          Gems are now fruits, matched fruits pop with animation, and each round has moves and challenges.
+        </p>
+
+        <div class="start-options">
+          <button class="active" id="startEasy" onclick="chooseStartDifficulty('easy')">Easy<br>25 moves</button>
+          <button id="startMedium" onclick="chooseStartDifficulty('medium')">Medium<br>20 moves</button>
+          <button id="startHard" onclick="chooseStartDifficulty('hard')">Hard<br>15 moves</button>
+        </div>
+
+        <button class="start-button" onclick="startGame()">Start Game</button>
+      </div>
+    </section>
+
+    <section class="end-overlay" id="endOverlay">
+      <div class="end-box">
+        <h2 id="endTitle">Game Over</h2>
+        <p id="endMessage"></p>
+        <button class="play-again-button" onclick="showStartAgain()">Play Again</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const boardElement = document.getElementById("board");
+    const scoreText = document.getElementById("scoreText");
+    const movesText = document.getElementById("movesText");
+    const goalText = document.getElementById("goalText");
+    const difficultyText = document.getElementById("difficultyText");
+    const bestScoreText = document.getElementById("bestScoreText");
+    const comboBanner = document.getElementById("comboBanner");
+    const challengeList = document.getElementById("challengeList");
+    const startOverlay = document.getElementById("startOverlay");
+    const endOverlay = document.getElementById("endOverlay");
+    const endTitle = document.getElementById("endTitle");
+    const endMessage = document.getElementById("endMessage");
+
+    const fruits = ["🍓", "🍋", "🍇", "🍊", "🍎", "🥝", "🍍"];
+
+    const difficultySettings = {
+      easy: {
+        name: "Easy",
+        moves: 25,
+        goal: 600,
+        challenges: [
+          { fruit: "🍓", target: 8, count: 0 },
+          { fruit: "🍋", target: 8, count: 0 }
+        ]
+      },
+      medium: {
+        name: "Medium",
+        moves: 20,
+        goal: 900,
+        challenges: [
+          { fruit: "🍇", target: 10, count: 0 },
+          { fruit: "🍊", target: 10, count: 0 },
+          { fruit: "🍎", target: 8, count: 0 }
+        ]
+      },
+      hard: {
+        name: "Hard",
+        moves: 15,
+        goal: 1200,
+        challenges: [
+          { fruit: "🥝", target: 12, count: 0 },
+          { fruit: "🍍", target: 12, count: 0 },
+          { fruit: "🍓", target: 10, count: 0 }
+        ]
+      }
+    };
+
+    let board = [];
+    let boardSize = 8;
+    let selectedCell = null;
+    let score = 0;
+    let movesLeft = 25;
+    let currentDifficulty = "easy";
+    let currentChallenges = [];
+    let gameStarted = false;
+    let boardLocked = false;
+
+    let bestScore = localStorage.getItem("fruitMatchBestScore");
+    if (bestScoreText) {
+      bestScoreText.textContent = bestScore === null ? "--" : bestScore;
+    }
+
+    function copyChallenges(challenges) {
+      return challenges.map(function(challenge) {
+        return {
+          fruit: challenge.fruit,
+          target: challenge.target,
+          count: 0
+        };
+      });
+    }
+
+    function randomFruit() {
+      return fruits[Math.floor(Math.random() * fruits.length)];
+    }
+
+    function createBoard() {
+      board = [];
+
+      for (let row = 0; row < boardSize; row++) {
+        let newRow = [];
+
+        for (let col = 0; col < boardSize; col++) {
+          let fruit = randomFruit();
+
+          while (
+            (col >= 2 && newRow[col - 1] === fruit && newRow[col - 2] === fruit) ||
+            (row >= 2 && board[row - 1][col] === fruit && board[row - 2][col] === fruit)
+          ) {
+            fruit = randomFruit();
+          }
+
+          newRow.push(fruit);
+        }
+
+        board.push(newRow);
+      }
+
+      drawBoard();
+    }
+
+    function drawBoard(popCells = [], dropAll = false) {
+      boardElement.innerHTML = "";
+
+      for (let row = 0; row < boardSize; row++) {
+        for (let col = 0; col < boardSize; col++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.textContent = board[row][col];
+          cell.dataset.row = row;
+          cell.dataset.col = col;
+
+          if (selectedCell && selectedCell.row === row && selectedCell.col === col) {
+            cell.classList.add("selected");
+          }
+
+          if (popCells.some(function(item) { return item.row === row && item.col === col; })) {
+            cell.classList.add("pop");
+          }
+
+          if (dropAll) {
+            cell.classList.add("drop");
+          }
+
+          cell.addEventListener("click", function() {
+            handleCellClick(row, col);
+          });
+
+          boardElement.appendChild(cell);
+        }
+      }
+    }
+
+    function handleCellClick(row, col) {
+      if (!gameStarted || boardLocked) {
+        return;
+      }
+
+      if (selectedCell === null) {
+        selectedCell = { row: row, col: col };
+        drawBoard();
+        return;
+      }
+
+      if (selectedCell.row === row && selectedCell.col === col) {
+        selectedCell = null;
+        drawBoard();
+        return;
+      }
+
+      if (!isBeside(selectedCell.row, selectedCell.col, row, col)) {
+        selectedCell = { row: row, col: col };
+        drawBoard();
+        return;
+      }
+
+      makeMove(selectedCell.row, selectedCell.col, row, col);
+    }
+
+    function isBeside(row1, col1, row2, col2) {
+      const rowDiff = Math.abs(row1 - row2);
+      const colDiff = Math.abs(col1 - col2);
+      return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
+    }
+
+    async function makeMove(row1, col1, row2, col2) {
+      if (!gameStarted || boardLocked) {
+        return;
+      }
+
+      boardLocked = true;
+      selectedCell = null;
+
+      try {
+        swap(row1, col1, row2, col2);
+        drawBoard();
+        await wait(160);
+
+        let matches = findMatches();
+
+        if (matches.length === 0) {
+          swap(row1, col1, row2, col2);
+          comboBanner.textContent = "Invalid swap! Match 3 fruits.";
+          drawBoard();
+          await wait(500);
+          comboBanner.textContent = "";
+          return;
+        }
+
+        movesLeft--;
+        await resolveMatches();
+        updateUI();
+        drawBoard();
+
+        if (checkWin()) {
+          endGame(true);
+          return;
+        }
+
+        if (movesLeft <= 0) {
+          endGame(false);
+          return;
+        }
+      } finally {
+        if (gameStarted) {
+          boardLocked = false;
+          selectedCell = null;
+          drawBoard();
+        }
+      }
+    }
+
+    function swap(row1, col1, row2, col2) {
+      const temp = board[row1][col1];
+      board[row1][col1] = board[row2][col2];
+      board[row2][col2] = temp;
+    }
+
+    async function resolveMatches() {
+      let combo = 1;
+      let matches = findMatches();
+
+      while (matches.length > 0) {
+        const points = matches.length * 10 * combo;
+        score += points;
+        updateChallengeProgress(matches);
+
+        comboBanner.textContent = combo > 1 ? "Combo x" + combo + "! +" + points : "+" + points + " points";
+        drawBoard(matches);
+        await wait(360);
+
+        clearMatches(matches);
+        dropFruits();
+        fillEmptySpaces();
+        drawBoard([], true);
+        updateUI();
+        await wait(260);
+
+        combo++;
+        matches = findMatches();
+      }
+
+      comboBanner.textContent = "";
+    }
+
+    function findMatches() {
+      const matched = [];
+      const found = new Set();
+
+      for (let row = 0; row < boardSize; row++) {
+        let count = 1;
+
+        for (let col = 1; col <= boardSize; col++) {
+          if (col < boardSize && board[row][col] === board[row][col - 1]) {
+            count++;
+          } else {
+            if (count >= 3) {
+              for (let i = 0; i < count; i++) {
+                const matchCol = col - 1 - i;
+                const key = row + "," + matchCol;
+                if (!found.has(key)) {
+                  found.add(key);
+                  matched.push({ row: row, col: matchCol, fruit: board[row][matchCol] });
+                }
+              }
+            }
+            count = 1;
+          }
+        }
+      }
+
+      for (let col = 0; col < boardSize; col++) {
+        let count = 1;
+
+        for (let row = 1; row <= boardSize; row++) {
+          if (row < boardSize && board[row][col] === board[row - 1][col]) {
+            count++;
+          } else {
+            if (count >= 3) {
+              for (let i = 0; i < count; i++) {
+                const matchRow = row - 1 - i;
+                const key = matchRow + "," + col;
+                if (!found.has(key)) {
+                  found.add(key);
+                  matched.push({ row: matchRow, col: col, fruit: board[matchRow][col] });
+                }
+              }
+            }
+            count = 1;
+          }
+        }
+      }
+
+      return matched;
+    }
+
+    function clearMatches(matches) {
+      matches.forEach(function(match) {
+        board[match.row][match.col] = null;
+      });
+    }
+
+    function dropFruits() {
+      for (let col = 0; col < boardSize; col++) {
+        let fruitsInColumn = [];
+
+        for (let row = boardSize - 1; row >= 0; row--) {
+          if (board[row][col] !== null) {
+            fruitsInColumn.push(board[row][col]);
+          }
+        }
+
+        for (let row = boardSize - 1; row >= 0; row--) {
+          board[row][col] = fruitsInColumn[boardSize - 1 - row] || null;
+        }
+      }
+    }
+
+    function fillEmptySpaces() {
+      for (let row = 0; row < boardSize; row++) {
+        for (let col = 0; col < boardSize; col++) {
+          if (board[row][col] === null) {
+            board[row][col] = randomFruit();
+          }
+        }
+      }
+    }
+
+    function canMakeMove() {
+      for (let row = 0; row < boardSize; row++) {
+        for (let col = 0; col < boardSize; col++) {
+          if (col + 1 < boardSize) {
+            swap(row, col, row, col + 1);
+            const hasMatchRight = findMatches().length > 0;
+            swap(row, col, row, col + 1);
+
+            if (hasMatchRight) {
+              return true;
+            }
+          }
+
+          if (row + 1 < boardSize) {
+            swap(row, col, row + 1, col);
+            const hasMatchDown = findMatches().length > 0;
+            swap(row, col, row + 1, col);
+
+            if (hasMatchDown) {
+              return true;
+            }
+          }
+        }
+      }
+
+      return false;
+    }
+
+    function updateChallengeProgress(matches) {
+      matches.forEach(function(match) {
+        currentChallenges.forEach(function(challenge) {
+          if (challenge.fruit === match.fruit && challenge.count < challenge.target) {
+            challenge.count++;
+          }
+        });
+      });
+    }
+
+    function drawChallenges() {
+      if (!challengeList) {
+        return;
+      }
+
+      challengeList.innerHTML = "";
+
+      currentChallenges.forEach(function(challenge) {
+        const item = document.createElement("div");
+        item.className = "challenge-item";
+
+        if (challenge.count >= challenge.target) {
+          item.classList.add("done");
+        }
+
+        item.textContent = "Clear " + challenge.target + " " + challenge.fruit + " fruits: " + Math.min(challenge.count, challenge.target) + "/" + challenge.target;
+        challengeList.appendChild(item);
+      });
+    }
+
+    function challengesComplete() {
+      return currentChallenges.every(function(challenge) {
+        return challenge.count >= challenge.target;
+      });
+    }
+
+    function checkWin() {
+      const setting = difficultySettings[currentDifficulty];
+      return score >= setting.goal;
+    }
+
+    function updateUI() {
+      const setting = difficultySettings[currentDifficulty];
+      scoreText.textContent = score;
+      movesText.textContent = movesLeft;
+      goalText.textContent = setting.goal;
+      if (difficultyText) {
+        difficultyText.textContent = setting.name;
+      }
+      drawChallenges();
+      updateDifficultyButtons();
+    }
+
+    function setDifficulty(level) {
+      currentDifficulty = level;
+      resetGame();
+    }
+
+    function chooseStartDifficulty(level) {
+      currentDifficulty = level;
+
+      document.getElementById("startEasy").classList.remove("active");
+      document.getElementById("startMedium").classList.remove("active");
+      document.getElementById("startHard").classList.remove("active");
+
+      if (level === "easy") {
+        document.getElementById("startEasy").classList.add("active");
+      } else if (level === "medium") {
+        document.getElementById("startMedium").classList.add("active");
+      } else {
+        document.getElementById("startHard").classList.add("active");
+      }
+    }
+
+    function updateDifficultyButtons() {
+      const easyBtn = document.getElementById("easyBtn");
+      const mediumBtn = document.getElementById("mediumBtn");
+      const hardBtn = document.getElementById("hardBtn");
+
+      if (!easyBtn || !mediumBtn || !hardBtn) {
+        return;
+      }
+
+      easyBtn.classList.toggle("active", currentDifficulty === "easy");
+      mediumBtn.classList.toggle("active", currentDifficulty === "medium");
+      hardBtn.classList.toggle("active", currentDifficulty === "hard");
+    }
+
+    function startGame() {
+      gameStarted = true;
+      startOverlay.style.display = "none";
+      resetGame();
+    }
+
+    function resetGame() {
+      const setting = difficultySettings[currentDifficulty];
+      score = 0;
+      movesLeft = setting.moves;
+      selectedCell = null;
+      boardLocked = false;
+      currentChallenges = copyChallenges(setting.challenges);
+      comboBanner.textContent = "";
+      endOverlay.style.display = "none";
+      createBoard();
+      updateUI();
+    }
+
+    function endGame(playerWon, customMessage = "") {
+      gameStarted = false;
+      boardLocked = true;
+      selectedCell = null;
+      drawBoard();
+
+      if (bestScore === null || score > Number(bestScore)) {
+        bestScore = score;
+        localStorage.setItem("fruitMatchBestScore", bestScore);
+        if (bestScoreText) {
+          bestScoreText.textContent = bestScore;
+        }
+      }
+
+      if (playerWon) {
+        endTitle.textContent = "You Win!";
+        endMessage.textContent = "Great job! You reached the score goal. Final score: " + score + ".";
+      } else if (customMessage !== "") {
+        endTitle.textContent = "Game Over";
+        endMessage.textContent = customMessage + " Final score: " + score + ". Click Play Again to reset.";
+      } else {
+        endTitle.textContent = "Game Over";
+        endMessage.textContent = "You ran out of moves. Final score: " + score + ". Click Play Again to reset and try again.";
+      }
+
+      endOverlay.style.display = "flex";
+    }
+
+    function showStartAgain() {
+      endOverlay.style.display = "none";
+      startOverlay.style.display = "flex";
+      boardLocked = false;
+    }
+
+    function wait(ms) {
+      return new Promise(function(resolve) {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    chooseStartDifficulty("easy");
+    resetGame();
+  </script>
+</body>
+</html>

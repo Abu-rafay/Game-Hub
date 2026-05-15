@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CoreBreak</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="page-shell">
+
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">2D Fighting Game</p>
+        <h1>CoreBreak</h1>
+      </div>
+
+      <button id="muteBtn" class="small-btn">Sound: On</button>
+    </header>
+
+    <main class="game-card">
+
+      <canvas id="gameCanvas" width="1200" height="800" tabindex="0"></canvas>
+
+      <div id="overlay" class="overlay">
+        <div class="menu-box">
+
+          <h2 id="overlayTitle">CoreBreak</h2>
+
+          <p id="overlayText">
+            Choose a difficulty, select your fighter, and win best of three rounds.
+          </p>
+
+          <div id="overlayContent" class="overlay-content"></div>
+
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

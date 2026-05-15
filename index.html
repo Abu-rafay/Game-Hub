@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Hub</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="inkspiller.css">
+</head>
+<body>
+
+  <div class="bg-animation">
+    <span class="blob blob1"></span>
+    <span class="blob blob2"></span>
+    <span class="blob blob3"></span>
+    <span class="grid-glow"></span>
+  </div>
+
+  <header>
+    <h1>Game Hub</h1>
+    <a href="index.html">Home</a>
+  </header>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <nav>
+        <ul>
+          <li><a href="#" class="game-btn" data-path="snake.html">Snake</a></li>
+          <li><a href="#" class="game-btn" data-path="tetris.html">Tetris</a></li>
+          <li><a href="#" class="game-btn" data-path="pingpong.html">Bat and Ball</a></li>
+          <li><a href="#" class="game-btn" data-path="alien-shooter.html">Alien Shooter</a></li>
+          <li><a href="#" class="game-btn" data-path="corebreak.html">Corebreak</a></li>
+          <li><a href="#" class="game-btn" data-path="inkspiller.html">Inkspiller</a></li>
+          <li><a href="#" class="game-btn" data-path="gem-gem.html">Gem Gem</a></li>
+
+
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="game-stage">
+      <div class="panel">
+
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <span class="toolbar-dot dot-pink"></span>
+            <span class="toolbar-dot dot-yellow"></span>
+            <span class="toolbar-dot dot-green"></span>
+          </div>
+
+          <span id="currentGame" class="game-title">Game Hub</span>
+        </div>
+
+        <div id="placeholder" class="placeholder">
+          <div class="placeholder-box">
+            <div class="placeholder-icon">🎮</div>
+            <h2>Welcome to Game Hub</h2>
+            <p>Select a game from the left and start playing.</p>
+          </div>
+        </div>
+
+        <iframe
+          id="stage"
+          class="game-frame hidden"
+          src=""
+          title="Game">
+        </iframe>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
